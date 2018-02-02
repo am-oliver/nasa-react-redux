@@ -1,36 +1,26 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
 import AstronomyCard from './AstronomyCard';
+import fetchData from '../../actions/fetch_data';
 
 
 class AstronomyContainer extends Component {
-    constructor () {
-        super();
-        this.state = {
-            astronomy: []
-        }
-    }
 
     componentDidMount() {
-        const NASA_URL = 'https://api.nasa.gov/planetary/apod?api_key=';
-        const API_KEY = 'uW5oPgEqbCqQzts7H016GxKRnEo8bZuQrdfSRPPU';
-
-        axios.get(NASA_URL + API_KEY).then(resp => {
-            console.log(resp)
-            this.setState({
-                astronomy:resp.data
-            })
-        }).catch(err => {
-            console.log('errored: ', err)
-        });
+        this.props.fetchData()
     }
 
     render () {
-        const { astronomy } = this.state;
         return (
             <AstronomyCard data={astronomy} />
         )
     }
 }
 
-export default AstronomyContainer;
+function mapStateToProps(state) {
+    return {astronomy: state.astronomy}
+}
+
+
+// map state to props and map dispatch to props
+export default connect(mapStateToProps, { fetchData })(AstronomyContainer);
